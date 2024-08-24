@@ -1,0 +1,32 @@
+import pytest
+from selenium import webdriver
+from selenium.webdriver.common.by import By
+
+class SearchPage:
+    def __init__(self, driver):
+        self.driver = driver
+        self.url = "https://example.com"
+        self.search_input = (By.ID, "q")
+        self.search_button = (By.XPATH, "//button[@type='submit']")
+
+    def open(self):
+        self.driver.get(self.url)
+
+    def enter_search_query(self, query):
+        self.driver.find_element(*self.search_input).send_keys(query)
+
+    def click_search(self):
+        self.driver.find_element(*self.search_button).click()
+
+def test_search():
+    driver = webdriver.Chrome()
+    search_page = SearchPage(driver)
+
+    try:
+        search_page.open()
+        search_page.enter_search_query("example query")
+        search_page.click_search()
+
+        assert "Результаты" in driver.title
+    finally:
+        driver.quit()
